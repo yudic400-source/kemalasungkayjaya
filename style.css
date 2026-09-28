@@ -46,11 +46,13 @@ ul {
 
 .header {
     width: 100%;
-    background: #ffffff;
-    border-bottom: 1px solid #eeeeee;
     position: sticky;
     top: 0;
     z-index: 1000;
+    background: rgba(255, 255, 255, 0.92);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    transition: all 0.3s ease;
 }
 
 .header .container {
@@ -58,6 +60,17 @@ ul {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
+}
+
+@supports ((backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px))) {
+    .header {
+        background: rgba(255, 255, 255, 0.18);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    }
 }
 
 
