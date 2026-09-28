@@ -679,6 +679,7 @@ section {
 
     .header .container {
         min-height: 70px;
+        position: relative;
     }
 
     .logo img {
@@ -688,10 +689,51 @@ section {
 
     .menu-toggle {
         display: block;
+        background: rgba(22, 119, 255, 0.08);
+        color: #1f2937;
+        border: 1px solid rgba(22, 119, 255, 0.15);
+        border-radius: 10px;
+        width: 42px;
+        height: 42px;
+        line-height: 1;
+        font-size: 24px;
+        padding: 0;
+        transition: all 0.3s ease;
     }
 
     .navbar {
         display: none;
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        left: 0;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+        padding: 10px 14px;
+    }
+
+    .navbar.active {
+        display: block;
+    }
+
+    .nav-menu {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 4px 0;
+    }
+
+    .nav-menu a {
+        display: block;
+        width: 100%;
+        padding: 10px 8px;
+        border-radius: 8px;
+    }
+
+    .nav-menu a:hover {
+        background: rgba(22, 119, 255, 0.06);
     }
 
     .hero {

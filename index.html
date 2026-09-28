@@ -79,13 +79,37 @@
 
 
             <!-- MENU MOBILE -->
-            <button class="menu-toggle" aria-label="Buka menu">
+            <button class="menu-toggle" aria-label="Buka menu" aria-expanded="false">
                 ☰
             </button>
 
         </div>
 
     </header>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navbar = document.querySelector('.navbar');
+        const navLinks = document.querySelectorAll('.nav-menu a');
+
+        if (menuToggle && navbar) {
+            menuToggle.addEventListener('click', () => {
+                const isOpen = navbar.classList.toggle('active');
+                menuToggle.setAttribute('aria-expanded', String(isOpen));
+                menuToggle.textContent = isOpen ? '✕' : '☰';
+            });
+
+            navLinks.forEach((link) => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        navbar.classList.remove('active');
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                        menuToggle.textContent = '☰';
+                    }
+                });
+            });
+        }
+    </script>
 
 
 
