@@ -676,88 +676,201 @@
                 </div>
 
 
-                <div class="kegiatan-grid">
+                <div class="kegiatan-slider" data-kegiatan-slider>
 
+                    <div class="kegiatan-visual">
+                        <img class="kegiatan-feature-image"
+                            src="assets/images/galeri-3.jpg"
+                            alt="Kegiatan sosial Paguyuban Kemala Sungkai Jaya">
+                        <span class="kegiatan-counter" aria-live="polite">01 / 03</span>
+                    </div>
 
-                    <article class="kegiatan-card">
+                    <div class="kegiatan-carousel">
 
-                        <img src="assets/images/galeri-3.jpg"
-                            alt="Kegiatan Paguyuban">
+                        <div class="kegiatan-viewport" aria-label="Pilihan kegiatan paguyuban">
+                            <div class="kegiatan-track">
 
-                        <div class="kegiatan-content">
+                                <article class="kegiatan-card is-active">
+                                    <h3 class="kegiatan-card-heading">
+                                        <button class="kegiatan-select" type="button" aria-pressed="true"
+                                            data-image="assets/images/galeri-3.jpg"
+                                            data-alt="Kegiatan sosial Paguyuban Kemala Sungkai Jaya">
+                                            <span class="kegiatan-category">Kegiatan Sosial</span>
+                                            <span class="kegiatan-card-title">Kegiatan Sosial Paguyuban</span>
+                                            <span class="kegiatan-description">Kegiatan sosial sebagai bentuk kepedulian dan kebersamaan antaranggota.</span>
+                                            <span class="kegiatan-arrow" aria-hidden="true">↗</span>
+                                        </button>
+                                    </h3>
+                                </article>
 
-                            <span>
-                                Kegiatan Sosial
-                            </span>
+                                <article class="kegiatan-card">
+                                    <h3 class="kegiatan-card-heading">
+                                        <button class="kegiatan-select" type="button" aria-pressed="false"
+                                            data-image="assets/images/galeri-2.jpg"
+                                            data-alt="Silaturahmi anggota Paguyuban Kemala Sungkai Jaya">
+                                            <span class="kegiatan-category">Silaturahmi</span>
+                                            <span class="kegiatan-card-title">Silaturahmi Anggota</span>
+                                            <span class="kegiatan-description">Menjalin komunikasi dan mempererat hubungan kekeluargaan.</span>
+                                            <span class="kegiatan-arrow" aria-hidden="true">↗</span>
+                                        </button>
+                                    </h3>
+                                </article>
 
-                            <h3>
-                                Kegiatan Sosial Paguyuban
-                            </h3>
+                                <article class="kegiatan-card">
+                                    <h3 class="kegiatan-card-heading">
+                                        <button class="kegiatan-select" type="button" aria-pressed="false"
+                                            data-image="assets/images/galeri-1.jpg"
+                                            data-alt="Acara kebersamaan anggota Paguyuban Kemala Sungkai Jaya">
+                                            <span class="kegiatan-category">Acara Paguyuban</span>
+                                            <span class="kegiatan-card-title">Kebersamaan Anggota</span>
+                                            <span class="kegiatan-description">Berbagai kegiatan bersama untuk menjaga kekompakan dan kebersamaan.</span>
+                                            <span class="kegiatan-arrow" aria-hidden="true">↗</span>
+                                        </button>
+                                    </h3>
+                                </article>
 
-                            <p>
-                                Kegiatan sosial sebagai bentuk kepedulian
-                                dan kebersamaan antaranggota.
-                            </p>
-
+                            </div>
                         </div>
 
-                    </article>
-
-
-                    <article class="kegiatan-card">
-
-                        <img src="assets/images/galeri-2.jpg"
-                            alt="Silaturahmi Paguyuban">
-
-                        <div class="kegiatan-content">
-
-                            <span>
-                                Silaturahmi
-                            </span>
-
-                            <h3>
-                                Silaturahmi Anggota
-                            </h3>
-
-                            <p>
-                                Menjalin komunikasi dan mempererat
-                                hubungan kekeluargaan.
-                            </p>
-
+                        <div class="kegiatan-controls" aria-label="Kontrol slider kegiatan">
+                            <button class="kegiatan-control" type="button" data-kegiatan-step="-1" aria-label="Kegiatan sebelumnya">
+                                <span aria-hidden="true">←</span>
+                            </button>
+                            <button class="kegiatan-control" type="button" data-kegiatan-step="1" aria-label="Kegiatan berikutnya">
+                                <span aria-hidden="true">→</span>
+                            </button>
                         </div>
 
-                    </article>
-
-
-                    <article class="kegiatan-card">
-
-                        <img src="assets/images/galeri-1.jpg"
-                            alt="Acara Paguyuban">
-
-                        <div class="kegiatan-content">
-
-                            <span>
-                                Acara Paguyuban
-                            </span>
-
-                            <h3>
-                                Kebersamaan Anggota
-                            </h3>
-
-                            <p>
-                                Berbagai kegiatan bersama untuk menjaga
-                                kekompakan dan kebersamaan.
-                            </p>
-
-                        </div>
-
-                    </article>
-
+                    </div>
                 </div>
 
             </div>
 
         </section>
+
+        <script>
+            (() => {
+                const slider = document.querySelector('[data-kegiatan-slider]');
+                if (!slider) return;
+
+                const featureImage = slider.querySelector('.kegiatan-feature-image');
+                const counter = slider.querySelector('.kegiatan-counter');
+                const track = slider.querySelector('.kegiatan-track');
+                const originalIndexes = new Map(
+                    [...track.querySelectorAll('.kegiatan-select')].map((button, index) => [button, index])
+                );
+                let isAnimating = false;
+                let pendingSteps = 0;
+                let imageSwapTimer;
+
+                track.querySelectorAll('.kegiatan-select').forEach((button) => {
+                    const preview = new Image();
+                    preview.src = button.dataset.image;
+                });
+
+                function setActiveCard(card) {
+                    const selectedButton = card.querySelector('.kegiatan-select');
+                    const originalIndex = originalIndexes.get(selectedButton);
+
+                    [...track.children].forEach((item) => {
+                        const isActive = item === card;
+                        item.classList.toggle('is-active', isActive);
+                        item.querySelector('.kegiatan-select').setAttribute('aria-pressed', String(isActive));
+                    });
+
+                    window.clearTimeout(imageSwapTimer);
+                    if (featureImage.getAttribute('src') !== selectedButton.dataset.image) {
+                        featureImage.classList.add('is-changing');
+                        imageSwapTimer = window.setTimeout(() => {
+                            featureImage.src = selectedButton.dataset.image;
+                            featureImage.alt = selectedButton.dataset.alt;
+                            featureImage.classList.remove('is-changing');
+                        }, 140);
+                    }
+
+                    counter.textContent = `${String(originalIndex + 1).padStart(2, '0')} / ${String(originalIndexes.size).padStart(2, '0')}`;
+                }
+
+                function finishStep(direction, outgoingCard, onTransitionEnd, timer) {
+                    if (!isAnimating) return;
+
+                    window.clearTimeout(timer);
+                    track.removeEventListener('transitionend', onTransitionEnd);
+                    if (direction > 0) track.append(outgoingCard);
+
+                    track.style.transition = 'none';
+                    track.style.transform = 'translateX(0)';
+                    track.getBoundingClientRect();
+                    track.style.transition = '';
+                    isAnimating = false;
+                    requestAnimationFrame(advanceQueue);
+                }
+
+                function animateStep(direction) {
+                    const cards = [...track.children];
+                    const distance = cards[0].getBoundingClientRect().width
+                        + parseFloat(getComputedStyle(track).gap || 0);
+                    let incomingCard;
+                    let outgoingCard = cards[0];
+
+                    if (direction > 0) {
+                        incomingCard = cards[1];
+                    } else {
+                        incomingCard = cards[cards.length - 1];
+                        track.style.transition = 'none';
+                        track.prepend(incomingCard);
+                        track.style.transform = `translateX(${-distance}px)`;
+                        track.getBoundingClientRect();
+                    }
+
+                    setActiveCard(incomingCard);
+                    isAnimating = true;
+
+                    let timer;
+                    function onTransitionEnd(event) {
+                        if (event.target !== track || event.propertyName !== 'transform') return;
+                        finishStep(direction, outgoingCard, onTransitionEnd, timer);
+                    }
+
+                    track.addEventListener('transitionend', onTransitionEnd);
+                    timer = window.setTimeout(() => {
+                        finishStep(direction, outgoingCard, onTransitionEnd, timer);
+                    }, 500);
+
+                    requestAnimationFrame(() => {
+                        track.style.transform = direction > 0
+                            ? `translateX(${-distance}px)`
+                            : 'translateX(0)';
+                    });
+                }
+
+                function advanceQueue() {
+                    if (isAnimating || pendingSteps === 0) return;
+
+                    const direction = Math.sign(pendingSteps);
+                    pendingSteps -= direction;
+                    animateStep(direction);
+                }
+
+                function requestSteps(steps) {
+                    pendingSteps += steps;
+                    advanceQueue();
+                }
+
+                track.querySelectorAll('.kegiatan-card').forEach((card) => {
+                    card.querySelector('.kegiatan-select').addEventListener('click', () => {
+                        const index = [...track.children].indexOf(card);
+                        if (index > 0) requestSteps(index);
+                    });
+                });
+
+                slider.querySelectorAll('[data-kegiatan-step]').forEach((control) => {
+                    control.addEventListener('click', () => {
+                        requestSteps(Number(control.dataset.kegiatanStep));
+                    });
+                });
+            })();
+        </script>
 
 
 
