@@ -491,6 +491,24 @@ section {
     font-size: 14px;
 }
 
+@media (min-width: 769px) {
+    .pengurus-grid > .pengurus-card:nth-child(1) {
+        order: 2;
+    }
+
+    .pengurus-grid > .pengurus-card:nth-child(2) {
+        order: 3;
+    }
+
+    .pengurus-grid > .pengurus-card:nth-child(3) {
+        order: 1;
+    }
+
+    .pengurus-grid > .pengurus-card:nth-child(4) {
+        order: 4;
+    }
+}
+
 
 /* =========================================================
    KEGIATAN
