@@ -18,7 +18,7 @@
     <link rel="icon" type="image/png" href="assets/images/logo.png?v=20261005-1">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="style.css?v=20261005-2">
+    <link rel="stylesheet" href="style.css?v=20261005-7">
 
 </head>
 
@@ -304,6 +304,10 @@
 
         <section class="hero" id="home">
 
+            <video class="hero-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1">
+                <source src="assets/images/intro.mp4" type="video/mp4">
+            </video>
+
             <div class="container hero-container">
 
                 <div class="hero-content">
@@ -340,7 +344,7 @@
 
                 <!-- HERO IMAGE -->
 
-                <div class="hero-image">
+                <div class="hero-image" hidden>
 
                     <img src="assets/images/pelantikan.jpeg"
                         alt="Paguyuban Kemala Sungkai Jaya">
@@ -350,6 +354,39 @@
             </div>
 
         </section>
+
+        <script>
+            (() => {
+                const header = document.querySelector('.header');
+                const hero = document.querySelector('.hero');
+                let updateFrame = 0;
+
+                if (!header || !hero) return;
+
+                const heroStart = hero.getBoundingClientRect().top + window.scrollY;
+
+                function updateHeaderForHero() {
+                    updateFrame = 0;
+                    const headerHeight = header.getBoundingClientRect().height;
+                    const heroBounds = hero.getBoundingClientRect();
+                    const overlapsHero = heroBounds.top < headerHeight && heroBounds.bottom > headerHeight;
+                    const scrollDistance = window.scrollY - heroStart;
+                    const scrollProgress = scrollDistance <= 1
+                        ? 0
+                        : Math.min(1, Math.max(0, scrollDistance / heroBounds.height));
+                    header.classList.toggle('is-over-hero', overlapsHero);
+                    hero.style.setProperty('--hero-scroll-shade', (Math.sqrt(scrollProgress) * 0.4).toFixed(3));
+                }
+
+                function scheduleHeaderUpdate() {
+                    if (!updateFrame) updateFrame = requestAnimationFrame(updateHeaderForHero);
+                }
+
+                window.addEventListener('scroll', scheduleHeaderUpdate, { passive: true });
+                window.addEventListener('resize', scheduleHeaderUpdate, { passive: true });
+                updateHeaderForHero();
+            })();
+        </script>
 
 
 
