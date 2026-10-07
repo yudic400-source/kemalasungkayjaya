@@ -16,7 +16,7 @@
     <meta name="author" content="Paguyuban Kemala Sungkai Jaya">
 
     <link rel="icon" type="image/png" href="assets/images/logo.png?v=20261005-1">
-    <link rel="stylesheet" href="style.css?v=20261007-6">
+    <link rel="stylesheet" href="style.css?v=20261007-2">
 </head>
 
 <body>
@@ -401,6 +401,74 @@
                 shareStatus.textContent = 'Salin tautan dari bilah alamat browser';
             }
         });
+
+        (() => {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            const revealTargets = document.querySelectorAll(
+                '.article-breadcrumb, .article-heading, .article-cover, ' +
+                '.article-summary, .article-body > p, .article-body > h2, ' +
+                '.article-quote, .article-sidebar > *'
+            );
+
+            if (!revealTargets.length) return;
+
+            const siblingGroups = new Map();
+            revealTargets.forEach((element) => {
+                const siblings = siblingGroups.get(element.parentElement) || [];
+                siblings.push(element);
+                siblingGroups.set(element.parentElement, siblings);
+                element.classList.add('scroll-reveal');
+            });
+
+            siblingGroups.forEach((siblings) => {
+                siblings.forEach((element, index) => {
+                    element.style.setProperty('--reveal-delay', `${Math.min(index * 75, 300)}ms`);
+                });
+            });
+
+            const pendingTargets = new Set(revealTargets);
+            let observer;
+            let frameId = 0;
+            let fallbackTimer = 0;
+
+            function reveal(element) {
+                element.classList.add('is-visible');
+                pendingTargets.delete(element);
+                observer?.unobserve(element);
+            }
+
+            if ('IntersectionObserver' in window) {
+                observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) reveal(entry.target);
+                    });
+                }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
+
+                revealTargets.forEach((element) => observer.observe(element));
+            }
+
+            function checkVisibleTargets() {
+                if (frameId) cancelAnimationFrame(frameId);
+                frameId = 0;
+                window.clearTimeout(fallbackTimer);
+                fallbackTimer = 0;
+                for (const element of pendingTargets) {
+                    const rect = element.getBoundingClientRect();
+                    if (rect.top < window.innerHeight - 36 && rect.bottom > 36) reveal(element);
+                }
+            }
+
+            function scheduleVisibilityCheck() {
+                if (frameId || fallbackTimer) return;
+                frameId = requestAnimationFrame(checkVisibleTargets);
+                fallbackTimer = window.setTimeout(checkVisibleTargets, 120);
+            }
+
+            window.addEventListener('scroll', scheduleVisibilityCheck, { passive: true });
+            window.addEventListener('resize', scheduleVisibilityCheck, { passive: true });
+            scheduleVisibilityCheck();
+        })();
     </script>
 
 </body>
